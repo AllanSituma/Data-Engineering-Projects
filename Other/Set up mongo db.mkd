@@ -1,0 +1,48 @@
+#Install Mongo
+
+sudo apt-get update
+sudo apt-get install mongodb
+
+
+#Set up auth
+nano /etc/mongodb.con
+
+edit auth=true
+
+#Create admin user
+
+
+// switch to the admin database
+use admin
+
+// create a new user to be stored in the admin database
+db.createUser({ 
+    user:"admin", 
+    pwd:"xxxxxxxxx", 
+    roles:[
+        { role: "userAdminAnyDatabase", db: "admin"  }
+    ] 
+})
+
+// log out of mongo shell
+exit
+
+#log in as admin
+
+mongo -u admin --authenticationDatabase admin -p
+
+#create user etl
+
+// ensure the new user is created under admin
+use admin
+
+// create new user and assign Read/Write permission only
+db.createUser({ 
+    user:"etl", 
+    pwd:"etl",
+    roles:[{ role: "readWrite", db: "etl"  }]  
+})
+
+#test if user was created
+
+mongo -u etl --authenticationDatabase admin -p
