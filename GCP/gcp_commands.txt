@@ -1,0 +1,34 @@
+#Some useful gcp commands
+#creating a bucket: 
+ gsutil mb gs://<BUCKET-NAME>
+
+#Copying a file from VM to bucket
+ gsutil cp <FILE-NAME> gs://<BUCKET-NAME>
+
+#list available regions
+ gcloud compute regions list
+
+#create environment variables
+ ENV-VARIABLE-NAME=[ENV-VARIABLE]
+ echo $ENV-VARIABLE-NAME
+
+#creating,setting and creating persistent environment variables
+
+ --Create environment variables
+   ENV-VARIABLE-NAME=[ENV-VARIABLE]
+   ENV-VARIABLE-NAME1=[ENV-VARIABLE]
+
+ --Create config file
+   mkdir <config_dir>
+   touch <config_dir>/<file_name>
+
+ --Append env vars values to config file (repeat for both env variables)
+   echo ENV-VARIABLE-NAME=$ENV-VARIABLE-NAME >> ~/<config_dir>/<file_name>
+
+ --Set & test the environment variables
+   source <config_dir>/<file_name>
+   echo $ENV-VARIABLE-NAME
+
+ --Make the env vars persistent
+   nano .profile
+   source <config_dir>/<file_name> #add at the bottom
