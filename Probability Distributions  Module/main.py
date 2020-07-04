@@ -1,5 +1,4 @@
 from gaussian import Gaussian
-from dataclasses import dataclass
 
 
 class PDCalculator(Gaussian):
@@ -18,14 +17,25 @@ class PDCalculator(Gaussian):
         self.pdf = distribution
 
 
-    def get_statistics(self):
+    def get_results(self,val):
 
-        mean = self.get_mean()
+        """Switcher function to get results per user input
 
-        return mean
+        Args:
+            val(string) : string that is applied to the switcher,
+                         to return any calculation.We may need to add a prompt 
+
+        """
+        
+        return{ 'mean':self.get_mean(),
+                'standard_dev':self.get_stdev(),
+                'histogram':self.histogram(),
+                'histogram_pdf':self.histogram_pdf()
+                }.get(val)
 
 
 if __name__== '__main__':
     file_name = input('')
     calculate = PDCalculator(file_name)
-    calculate.get_statistics()
+    calculation = input('')
+    calculate.get_results(calculation)

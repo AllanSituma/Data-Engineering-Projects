@@ -1,6 +1,6 @@
 import math
-import matplotlib.pyplot as plt
 from convertfile import ConvertFile
+from graphs import GraphCreator
 
 
 class Gaussian(ConvertFile):
@@ -63,4 +63,66 @@ class Gaussian(ConvertFile):
         self.standard_deviation = stdev
         
         return self.standard_deviation
+
+    def pdf(self, x):
+        """Probability density function calculator for the gaussian distribution.
+        
+        Args:
+            x (float): point for calculating the probability density function
+            
+        
+        Returns:
+            float: probability density function output
+        """
+        
+        return (1.0/(self.standard_deviation * math.sqrt(2*math.pi))) * math.exp(-0.5*((x - self.mean) / self.standard_deviation) ** 2)
+    
+    def histogram(self):
+
+        """Method to output a histogram of the instance variable data using 
+        matplotlib pyplot library.
+        
+        Args:
+            None
+            
+        Returns:
+            Histogram chart
+        """
+        x = 2
+
+        data = self.return_list()
+
+        pdf = self.pdf(x)
+
+        graph = GraphCreator(data,pdf)
+        
+        chart = graph.plot_histogram()
+        
+        return chart
+
+    def histogram_pdf(self):
+
+        """Method to plot the normalized histogram of the data and a plot of the 
+        probability density function along the same range
+        
+        Args:
+            n_spaces (int): number of data points 
+        
+        Returns:
+            list: x values for the pdf plot
+            list: y values for the pdf plot
+            
+        """
+
+        x = 2
+
+        data = self.return_list()
+
+        pdf = self.pdf(x)
+
+        graph = GraphCreator(data,pdf)
+        
+        chart = graph.plot_histogram_pdf()
+        
+        return chart
 
