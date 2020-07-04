@@ -36,3 +36,31 @@ class Gaussian(ConvertFile):
 
         return self.mean
 
+    def get_stdev(self,sample=True):
+        """ Method that calculates the standard deviation
+
+        Args:
+            sample(bool): whether the data represents sample population
+
+        Returns:
+            standard deviation (float) of the data
+
+        """
+        num_list = self.return_list()
+        
+        mean = self.get_mean()
+
+        if sample:
+            n = len(num_list) - 1
+        else:
+            n = len(num_list)
+
+        for i in num_list:
+            sigma += (i-mean)**2
+        
+        stdev = math.sqrt(sigma/n)
+        
+        self.standard_deviation = stdev
+        
+        return self.standard_deviation
+

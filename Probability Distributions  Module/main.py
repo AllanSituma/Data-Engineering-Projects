@@ -1,4 +1,6 @@
 from gaussian import Gaussian
+from dataclasses import dataclass
+
 
 class PDCalculator(Gaussian):
     """ class that calculates statistics of different probability distributions 
@@ -7,6 +9,7 @@ class PDCalculator(Gaussian):
 
     Attributes:
         distribution - Defines the distribution of the data
+        Defining distributin : Gaussian 
     
     """
 
@@ -23,6 +26,6 @@ class PDCalculator(Gaussian):
 
 
 if __name__== '__main__':
-    file_name = ''
+    file_name = input('')
     calculate = PDCalculator(file_name)
     calculate.get_statistics()
