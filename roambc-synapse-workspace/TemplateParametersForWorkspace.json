@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "roambc-synapse-workspace"
+		},
+		"AzureDataLakeStorage_servicePrincipalCredential": {
+			"value": ""
+		},
+		"roambc-synapse-workspace-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:roambc-synapse-workspace.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://bc2adlsroamstorage.dfs.core.windows.net"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_tenant": {
+			"value": "15a21561-2767-4ad5-b518-89c3ff410cb4"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_servicePrincipalId": {
+			"value": "aeb1be25-efa0-41bd-8f9e-206f1f9cbe53"
+		},
+		"roambc-synapse-workspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://bc2adlsroamstorage.dfs.core.windows.net"
+		},
+		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_containerName": {
+			"value": "bc2adlsroamstorage"
+		},
+		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_deleteDeltas": {
+			"value": true
+		},
+		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_sparkpoolName": {
+			"value": "bc2adlsexport"
+		}
+	}
+}
