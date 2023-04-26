@@ -1,0 +1,38 @@
+{
+	"name": "bc2adlstrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Consolidation_AllEntities",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"containerName": "bc2adlsroamstorage",
+					"deleteDeltas": true,
+					"sparkpoolName": "bc2adlsexport"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2023-04-25T04:43:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"weekDays": [
+						"Wednesday",
+						"Monday",
+						"Tuesday",
+						"Thursday",
+						"Friday"
+					]
+				}
+			}
+		}
+	}
+}
