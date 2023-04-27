@@ -22,15 +22,6 @@
 		},
 		"roambc-synapse-workspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://bc2adlsroamstorage.dfs.core.windows.net"
-		},
-		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_containerName": {
-			"value": "bc2adlsroamstorage"
-		},
-		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_deleteDeltas": {
-			"value": true
-		},
-		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_sparkpoolName": {
-			"value": "bc2adlsexport"
 		}
 	}
 }

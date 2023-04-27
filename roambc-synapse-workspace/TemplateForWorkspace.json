@@ -31,33 +31,12 @@
 		"roambc-synapse-workspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://bc2adlsroamstorage.dfs.core.windows.net"
-		},
-		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_containerName": {
-			"type": "string",
-			"defaultValue": "bc2adlsroamstorage"
-		},
-		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_deleteDeltas": {
-			"type": "bool",
-			"defaultValue": true
-		},
-		"bc2adlstrigger_properties_Consolidation_AllEntities_parameters_sparkpoolName": {
-			"type": "string",
-			"defaultValue": "bc2adlsexport"
 		}
 	},
 	"variables": {
 		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('workspaceName'), '/bc2adlsexport')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/Consolidation_AllEntities')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
@@ -173,8 +152,7 @@
 					}
 				},
 				"annotations": [],
-				"type": "Microsoft.Synapse/workspaces/pipelines",
-				"lastPublishTime": "2023-04-24T12:22:41Z"
+				"type": "Microsoft.Synapse/workspaces/pipelines"
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/deltasManifest_dataset')]",
@@ -302,25 +280,20 @@
 				},
 				"parameters": {
 					"containerName": {
-						"type": "string",
-						"defaultValue": "@pipeline().parameters.containerName"
+						"type": "string"
 					},
 					"entityName": {
-						"type": "string",
-						"defaultValue": "@item().entityName"
+						"type": "string"
 					},
 					"deleteDeltas": {
-						"type": "bool",
-						"defaultValue": true
+						"type": "bool"
 					},
 					"sparkpoolName": {
-						"type": "string",
-						"defaultValue": "@pipeline().parameters.sparkpoolName"
+						"type": "string"
 					}
 				},
 				"annotations": [],
-				"type": "Microsoft.Synapse/workspaces/pipelines",
-				"lastPublishTime": "2023-04-26T10:46:09Z"
+				"type": "Microsoft.Synapse/workspaces/pipelines"
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/deltas_dataset')]",
@@ -1155,8 +1128,7 @@
 						"type": "String"
 					}
 				},
-				"annotations": [],
-				"lastPublishTime": "2023-04-24T12:22:33Z"
+				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/Consolidation_flow')]",
@@ -1512,20 +1484,8 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Consolidation_AllEntities",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"containerName": "[parameters('bc2adlstrigger_properties_Consolidation_AllEntities_parameters_containerName')]",
-							"deleteDeltas": "[parameters('bc2adlstrigger_properties_Consolidation_AllEntities_parameters_deleteDeltas')]",
-							"sparkpoolName": "[parameters('bc2adlstrigger_properties_Consolidation_AllEntities_parameters_sparkpoolName')]"
-						}
-					}
-				],
+				"runtimeState": "Stopped",
+				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
@@ -1545,9 +1505,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/pipelines/Consolidation_AllEntities')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
@@ -1562,6 +1520,27 @@
 							"computeType": "General",
 							"coreCount": 8,
 							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/IntegrationRuntime1')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "South Africa North",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
 						}
 					}
 				}
@@ -1646,7 +1625,7 @@
 							"name": "DeltasWithUniqueRecordKey"
 						}
 					],
-					"script": "parameters{\n\tcontainerName as string,\n\tentityName as string,\n\tdataFormat as string,\n\tperCompanyEntity as boolean\n}\nsource(output(\n\t\t{timestamp-0} as long,\n\t\t{systemId-2000000000} as string,\n\t\t{SystemCreatedAt-2000000001} as timestamp,\n\t\t{$Company} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\tentity: ($entityName),\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'deltas',\n\tlocal: true,\n\tfolderPath: '',\n\tfileSystem: ($containerName),\n\ttimestampFormats: ['yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\'']) ~> Deltas\nsource(output(\n\t\t{timestamp-0} as long,\n\t\t{systemId-2000000000} as string,\n\t\t{SystemCreatedAt-2000000001} as timestamp,\n\t\t{$Company} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\tentity: ($entityName),\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'data',\n\tlocal: true,\n\tfolderPath: '',\n\tfileSystem: ($containerName),\n\ttimestampFormats: ['yyyy-MM-dd HH:mm:ss','yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\'']) ~> CurrentData\nDeltasWithUniqueRecordKey filter(isNull({SystemCreatedAt-2000000001})) ~> FilterForDeleted\nCombineWithDeltas, FilterForDeleted exists(CombineWithDeltas@{$UniqueRecordKey} == DeltasWithUniqueRecordKey@{$UniqueRecordKey},\n\tnegate:true,\n\tbroadcast: 'auto')~> RemoveDeleted\nFilterEmptyRows sort(desc({timestamp-0}, false)) ~> SortByTimestamp\nSortByTimestamp aggregate(groupBy({$UniqueRecordKey}),\n\teach(match(name!='$UniqueRecordKey'), $$ = first($$))) ~> PickLastChanges\nDeltasWithUniqueRecordKey, CurrentDataWithUniqueRecordKey union(byName: true)~> CombineWithDeltas\nRemoveDeleted filter(not(isNull({systemId-2000000000}))) ~> FilterEmptyRows\nPickLastChanges split(equals($dataFormat, 'parquet'),\n\tequals($dataFormat, 'CSV'),\n\tdisjoint: false) ~> DataFormatCondition@(ParquetStaging, CSVStaging)\nCurrentData derive({$UniqueRecordKey} = concat({systemId-2000000000}, iif($perCompanyEntity, {$Company}, \"\"))) ~> CurrentDataWithUniqueRecordKey\nDeltas derive({$UniqueRecordKey} = concat({systemId-2000000000}, iif($perCompanyEntity, {$Company}, \"\"))) ~> DeltasWithUniqueRecordKey\nDataFormatCondition@ParquetStaging sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfileSystem: ($containerName),\n\tfolderPath: (concat('staging/', $entityName)),\n\tcompressionCodec: 'snappy',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tmapColumn(\n\t\teach(match(iif(name=='$UniqueRecordKey',false(),iif(name=='$Company',$perCompanyEntity==true(),true()))))\n\t),\n\tmanifestType: 'manifest') ~> StagingParquet\nDataFormatCondition@CSVStaging sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delimited',\n\tfileSystem: ($containerName),\n\tfolderPath: (concat('staging/', $entityName)),\n\tcolumnDelimiter: ',',\n\tescapeChar: '\\\\',\n\tquoteChar: '\\\"',\n\tcolumnNamesAsHeader: true,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\tmapColumn(\n\t\teach(match(iif(name=='$UniqueRecordKey',false(),iif(name=='$Company',$perCompanyEntity==true(),true()))))\n\t),\n\tmanifestType: 'manifest') ~> StagingCSV"
+					"script": "parameters{\n\tcontainerName as string,\n\tentityName as string,\n\tdataFormat as string,\n\tperCompanyEntity as boolean\n}\nsource(output(\n\t\t{timestamp-0} as long,\n\t\t{systemId-2000000000} as string,\n\t\t{SystemCreatedAt-2000000001} as timestamp,\n\t\t{$Company} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\tentity: ($entityName),\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'deltas',\n\tlocal: true,\n\tfolderPath: '',\n\tfileSystem: ($containerName),\n\ttimestampFormats: ['yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\'']) ~> Deltas\nsource(output(\n\t\t{timestamp-0} as long,\n\t\t{systemId-2000000000} as string,\n\t\t{SystemCreatedAt-2000000001} as timestamp,\n\t\t{$Company} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: true,\n\tentity: ($entityName),\n\tformat: 'cdm',\n\tmanifestType: 'manifest',\n\tmanifestName: 'data',\n\tlocal: true,\n\tfolderPath: '',\n\tfileSystem: ($containerName),\n\ttimestampFormats: ['yyyy-MM-dd HH:mm:ss','yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\'']) ~> CurrentData\nDeltasWithUniqueRecordKey filter(isNull({SystemCreatedAt-2000000001})) ~> FilterForDeleted\nCombineWithDeltas, FilterForDeleted exists(CombineWithDeltas@{$UniqueRecordKey} == DeltasWithUniqueRecordKey@{$UniqueRecordKey},\n\tnegate:true,\n\tbroadcast: 'auto')~> RemoveDeleted\nFilterEmptyRows sort(desc({timestamp-0}, false)) ~> SortByTimestamp\nSortByTimestamp aggregate(groupBy({$UniqueRecordKey}),\n\teach(match(name!='$UniqueRecordKey'), $$ = first($$))) ~> PickLastChanges\nDeltasWithUniqueRecordKey, CurrentDataWithUniqueRecordKey union(byName: true)~> CombineWithDeltas\nRemoveDeleted filter(not(isNull({systemId-2000000000}))) ~> FilterEmptyRows\nPickLastChanges split(equals($dataFormat, 'parquet'),\n\tequals($dataFormat, 'CSV'),\n\tdisjoint: false) ~> DataFormatCondition@(ParquetStaging, CSVStaging)\nCurrentData derive({$UniqueRecordKey} = concat({systemId-2000000000}, iif($perCompanyEntity, {$Company}, \"\"))) ~> CurrentDataWithUniqueRecordKey\nDeltas derive({$UniqueRecordKey} = concat({systemId-2000000000}, iif($perCompanyEntity, {$Company}, \"\"))) ~> DeltasWithUniqueRecordKey\nDataFormatCondition@ParquetStaging sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfileSystem: ($containerName),\n\tfolderPath: (concat('staging/', $entityName)),\n\tcompressionCodec: 'snappy',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\teach(match(iif(name=='$UniqueRecordKey',false(),iif(name=='$Company',$perCompanyEntity==true(),true()))))\n\t),\n\tmanifestType: 'manifest') ~> StagingParquet\nDataFormatCondition@CSVStaging sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delimited',\n\tfileSystem: ($containerName),\n\tfolderPath: (concat('staging/', $entityName)),\n\tcolumnDelimiter: ',',\n\tescapeChar: '\\\\',\n\tquoteChar: '\\\"',\n\tcolumnNamesAsHeader: true,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\teach(match(iif(name=='$UniqueRecordKey',false(),iif(name=='$Company',$perCompanyEntity==true(),true()))))\n\t),\n\tmanifestType: 'manifest') ~> StagingCSV"
 				}
 			},
 			"dependsOn": [
@@ -1676,23 +1655,19 @@
 					"executorMemory": "28g",
 					"executorCores": 4,
 					"numExecutors": 2,
-					"runAsWorkspaceSystemIdentity": false,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "51c355e8-ad14-41f9-ac0c-178bba9ffe1e"
+						"spark.autotune.trackingId": "4aacc607-65f4-4644-9287-c5bf212f559f"
 					}
 				},
 				"metadata": {
-					"saveOutput": true,
-					"synapse_widget": {
-						"version": "0.1"
-					},
+					"saveOutput": false,
 					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
-						"display_name": "python"
+						"display_name": "Synapse PySpark"
 					},
 					"language_info": {
 						"name": "python"
@@ -1710,7 +1685,9 @@
 							}
 						},
 						"source": [
-							"When executed, this notebook creates a shared metadata table in a Synapse lake database. This table is managed in Spark, but can also be queried using Synapse Serverless SQL. Read more about shared metadata tables.\r\n",
+							"# Create an external Spark table based on existing parquet files on the data lake\r\n",
+							"\r\n",
+							"When executed, this notebook creates a shared metadata table in a Synapse lake database. This table is managed in Spark, but can also be queried using Synapse Serverless SQL. [Read more about shared metadata tables](https://learn.microsoft.com/en-us/azure/synapse-analytics/metadata/table).\r\n",
 							"\r\n",
 							"The table created by this notebook is an external table, meaning that it is based on existing data on the data lake. Data is not copied or duplicated when creating the table. The notebook will create a database with the name of the data lake container, if it does not exist yet. If a table with the same name already exists, no new table will be created.\r\n",
 							"\r\n",
@@ -1728,14 +1705,18 @@
 								"transient": {
 									"deleting": false
 								}
-							}
+							},
+							"tags": [
+								"parameters"
+							]
 						},
 						"source": [
 							"# These parameters are automatically provided by the calling pipeline. Uncomment and provide parameters if run manually!\r\n",
 							"# container_name = ''\r\n",
 							"# entity_name = ''"
 						],
-						"outputs": []
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -1763,7 +1744,8 @@
 							"re_match = re.search('https://(.*).dfs.core.windows.net', ls_endpoint)\r\n",
 							"storage_account_name = re_match.group(1)"
 						],
-						"outputs": []
+						"outputs": [],
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -1783,10 +1765,10 @@
 							"\r\n",
 							"db_name = re.sub('[^a-zA-Z0-9_]', '_', container_name) # remove invalid characters and replace them with underscores\r\n",
 							"query = f'CREATE DATABASE IF NOT EXISTS `{db_name}`'\r\n",
-							"spark.sql(query)\r\n",
-							"     "
+							"spark.sql(query)"
 						],
-						"outputs": []
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -1809,7 +1791,8 @@
 							"query = f'CREATE TABLE IF NOT EXISTS `{db_name}`.`{table_name}` USING Parquet LOCATION \"{location}\"'\r\n",
 							"spark.sql(query)"
 						],
-						"outputs": []
+						"outputs": [],
+						"execution_count": 2
 					}
 				]
 			},
@@ -1831,6 +1814,31 @@
 				},
 				"nodeCount": 10,
 				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.3",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "southafricanorth"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/bc2adlsegion')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 16,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "XLarge",
 				"nodeSizeFamily": "MemoryOptimized",
 				"sparkVersion": "3.3",
 				"isComputeIsolationEnabled": false,
