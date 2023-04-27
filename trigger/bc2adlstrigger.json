@@ -3,19 +3,7 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "Consolidation_AllEntities",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"containerName": "bc2adlsroamstorage",
-					"deleteDeltas": true,
-					"sparkpoolName": "bc2adlsexport"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
