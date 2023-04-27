@@ -30,7 +30,11 @@
 						"type": "LinkedServiceReference"
 					},
 					"name": "StagingParquet",
-					"description": "Writing data as parquet. Column $UniqueRecordKey is not included in output. $Company column is only included if $perCompanyEntity is true."
+					"description": "Writing data as parquet. Column $UniqueRecordKey is not included in output. $Company column is only included if $perCompanyEntity is true.",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage",
+						"type": "LinkedServiceReference"
+					}
 				},
 				{
 					"linkedService": {
