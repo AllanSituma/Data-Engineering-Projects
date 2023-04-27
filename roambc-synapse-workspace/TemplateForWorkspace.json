@@ -1527,27 +1527,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/IntegrationRuntime1')]",
-			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "South Africa North",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLive": 10,
-							"cleanup": false,
-							"customProperties": []
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Consolidation_flow')]",
 			"type": "Microsoft.Synapse/workspaces/dataflows",
 			"apiVersion": "2019-06-01-preview",
@@ -1581,7 +1560,11 @@
 								"type": "LinkedServiceReference"
 							},
 							"name": "StagingParquet",
-							"description": "Writing data as parquet. Column $UniqueRecordKey is not included in output. $Company column is only included if $perCompanyEntity is true."
+							"description": "Writing data as parquet. Column $UniqueRecordKey is not included in output. $Company column is only included if $perCompanyEntity is true.",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage",
+								"type": "LinkedServiceReference"
+							}
 						},
 						{
 							"linkedService": {
